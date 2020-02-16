@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnimalCategoryRepository")
@@ -25,6 +26,7 @@ class AnimalCategory
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Animal", mappedBy="animalCategory")
+     * @MaxDepth(1)
      */
     private $animals;
 

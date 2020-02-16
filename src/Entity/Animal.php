@@ -44,6 +44,9 @@ class Animal
     private $age;
 
     /**
+     * true: male
+     * false: femelle
+     * 
      * @ORM\Column(type="boolean")
      */
     private $gender;

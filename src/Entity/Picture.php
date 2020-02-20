@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PictureRepository")
@@ -24,7 +23,6 @@ class Picture
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Animal", inversedBy="pictures")
-     * @MaxDepth(1)
      */
     private $animal;
 

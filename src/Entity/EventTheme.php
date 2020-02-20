@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,7 +30,6 @@ class EventTheme
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="eventTheme")
-     * @MaxDepth(1)
      */
     private $event;
 

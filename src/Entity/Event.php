@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
@@ -59,7 +58,6 @@ class Event
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\EventTheme", inversedBy="event")
-     * @MaxDepth(1)
      */
     private $eventTheme;
 

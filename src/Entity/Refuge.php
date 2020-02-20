@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RefugeRepository")
@@ -51,7 +50,6 @@ class Refuge
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Animal", mappedBy="refuge")
-     * @MaxDepth(1)
      */
     private $animals;
 

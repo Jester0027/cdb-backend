@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -70,20 +69,17 @@ class Animal
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AnimalCategory", inversedBy="animals")
      * @ORM\JoinColumn(nullable=false)
-     * @MaxDepth(1)
      */
     private $animalCategory;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Refuge", inversedBy="animals")
      * @ORM\JoinColumn(nullable=false)
-     * @MaxDepth(1)
      */
     private $refuge;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="animal", cascade={"remove"})
-     * @MaxDepth(1)
      */
     private $pictures;
 

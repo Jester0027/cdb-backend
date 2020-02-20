@@ -14,3 +14,8 @@ framework:
     #fragments: true
     php_errors:
         log: true
+    
+    serializer:
+        max_depth_handler: App\Serializer\MaxDepthHandler
+        circular_reference_handler: App\Serializer\CircularReferenceHandler
+        enabled: true

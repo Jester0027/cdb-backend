@@ -79,7 +79,7 @@ class Animal
     private $refuge;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="animal")
+     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="animal", cascade={"remove"})
      */
     private $pictures;
 

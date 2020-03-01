@@ -2,9 +2,10 @@
 
 namespace App\Mailer;
 
-use Symfony\Component\HttpFoundation\Request;
 use Swift_Mailer;
 use Swift_Message;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class MailerService
 {
@@ -13,16 +14,18 @@ class MailerService
 
     private $mailer;
     private $request;
+    private $content;
 
-    public function __construct(Swift_Mailer $mailer, Request $request)
+    public function __construct(Swift_Mailer $mailer, RequestStack $requestStack)
     {
         $this->mailer = $mailer;
-        $this->request = $request;
+        $this->request = $requestStack->getCurrentRequest();
+        $this->content = $this->request->getContent();
     }
 
     private function sendMail(string $to)
     {
-        $data = json_decode($this->request->getContent());
+        $data = $this->content;
         $message = (new Swift_Message())
             ->setFrom($data->from)
             ->setTo($to)
@@ -32,18 +35,18 @@ class MailerService
         $result = $this->mailer->send($message);
 
         if(!$result) {
-            return ["error" => "could not send mail"];
+            return new JsonResponse(["error" => "could not send email"], 500);
         }
-        return ["code" => "200", "message" => "mail sent successfully"];
+        return new JsonResponse(["code" => "200", "message" => "mail sent successfully"], 200);
     }
 
     public function sendContactDemand()
     {
-        $this->sendMail(self::CONTACT);
+        return $this->sendMail(self::CONTACT);
     }
 
     public function sendVolunteeringDemand()
     {
-        $this->sendMail(self::VOLUNTEERING);
+        return $this->sendMail(self::VOLUNTEERING);
     }
 }

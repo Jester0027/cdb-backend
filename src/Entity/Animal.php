@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnimalRepository")
@@ -79,9 +80,16 @@ class Animal
     private $refuge;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="animal", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="animal", orphanRemoval=true, cascade={"persist"})
      */
     private $pictures;
+
+    /**
+     * @Assert\All({
+     *  @Assert\Image(mimeTypes="image/png")
+     * })
+     */
+    private $pictureFiles;
 
     public function __construct()
     {
@@ -252,6 +260,28 @@ class Animal
                 $picture->setAnimal(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPictureFiles()
+    {
+        return $this->pictureFiles;
+    }
+
+    /**
+     * @param mixed $pictureFiles
+     * @return self
+     */
+    public function setPictureFiles($pictureFiles): self
+    {
+        foreach ($pictureFiles as $pictureFile) {
+            $picture = new Picture();
+            $picture->setImageFile($pictureFile);
+            $this->addPicture($picture);
+        }
+
+        $this->pictureFiles = $pictureFiles;
 
         return $this;
     }

@@ -20,7 +20,7 @@ class MailerService
     {
         $this->mailer = $mailer;
         $this->request = $requestStack->getCurrentRequest();
-        $this->content = $this->request->getContent();
+        $this->content = json_decode($this->request->getContent());
     }
 
     private function sendMail(string $to)

@@ -4,12 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Animal;
 use App\Repository\AnimalRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use JMS\Serializer\SerializerInterface;
 
 /**
  * @Route("/api")
@@ -25,10 +24,7 @@ class AnimalController extends AbstractController
      */
     public function show(Animal $animal, SerializerInterface $serializer): Response
     {
-        $data = $serializer->serialize($animal, 'json', [
-            "ignored_attributes" => ["animals", "animal"],
-            "skip_null_values" => true,
-        ]);
+        $data = $serializer->serialize($animal, 'json', SerializationContext::create()->setGroups(["animal"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }
@@ -43,10 +39,7 @@ class AnimalController extends AbstractController
     public function index(AnimalRepository $animalRepository, SerializerInterface $serializer): Response
     {
         $animals = $animalRepository->findAll();
-        $data = $serializer->serialize($animals, 'json', [
-            "ignored_attributes" => ["animals", "animal"],
-            "skip_null_values" => true,
-        ]);
+        $data = $serializer->serialize($animals, 'json', SerializationContext::create()->setGroups(["animal"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }

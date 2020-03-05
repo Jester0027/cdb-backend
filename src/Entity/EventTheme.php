@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventThemeRepository")
@@ -15,21 +16,29 @@ class EventTheme
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * 
+     * @JMS\Groups({"theme"})
      */
     private $description;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="eventTheme")
+     * 
+     * @JMS\Groups({"theme"})
      */
     private $event;
 

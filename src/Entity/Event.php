@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventRepository")
@@ -13,51 +14,71 @@ class Event
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="datetime")
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $eventDate;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $address;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $zipCode;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $coordinates;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $imageUrl;
 
     /**
      * @ORM\Column(type="text")
+     * 
+     * @JMS\Groups({"event", "theme"})
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\EventTheme", inversedBy="event")
+     * 
+     * @JMS\Groups({"event"})
      */
     private $eventTheme;
 

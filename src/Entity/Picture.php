@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PictureRepository")
@@ -16,22 +17,30 @@ class Picture
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"animal", "picture"})
      */
     private $id;
 
     /**
      * @var File|null
      * @Vich\UploadableField(mapping="animal_picture", fileNameProperty="url")
+     * 
+     * @JMS\Groups({"animal", "picture"})
      */
     private $imageFile;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"animal", "picture"})
      */
     private $url;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Animal", inversedBy="pictures")
+     * 
+     * @JMS\Groups({"picture"})
      */
     private $animal;
 

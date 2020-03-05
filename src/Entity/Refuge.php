@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RefugeRepository")
@@ -15,41 +16,57 @@ class Refuge
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"animal", "refuge"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"animal", "refuge"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"animal", "refuge"})
      */
     private $address;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"animal", "refuge"})
      */
     private $city;
 
     /**
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"animal", "refuge"})
      */
     private $zipCode;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"animal", "refuge"})
      */
     private $coordinates;
 
     /**
      * @ORM\Column(type="text")
+     * 
+     * @JMS\Groups({"animal", "refuge"})
      */
     private $description;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Animal", mappedBy="refuge")
+     * 
+     * @JMS\Groups({"refuge"})
      */
     private $animals;
 

@@ -3,14 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\EventTheme;
+use JMS\Serializer\SerializerInterface;
 use App\Repository\EventThemeRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @route("/api")
@@ -27,14 +26,7 @@ class EventThemeController extends AbstractController
      */
     public function show(Request $request, EventTheme $eventTheme, SerializerInterface $serializer): Response
     {
-        $getEvents = $request->query->get('events') === 'true' ? true : false;
-        $data = $serializer->serialize($eventTheme, 'json', [
-            'ignored_attributes' => [
-                $getEvents ? '' : 'event',
-                'eventTheme'
-            ],
-            'skip_null_values' => true
-        ]);
+        $data = $serializer->serialize($eventTheme, 'json', SerializationContext::create()->setGroups(["theme"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }
@@ -48,16 +40,9 @@ class EventThemeController extends AbstractController
      */
     public function index(Request $request, EventThemeRepository $eventThemeRepository, SerializerInterface $serializer): Response
     {
-        $getEvents = $request->query->get('events') === 'true' ? true : false;
         $eventThemes = $eventThemeRepository->findAll();
-        $data = $serializer->serialize($eventThemes, 'json', [
-            'ignored_attributes' => [
-                $getEvents ? '' : 'event',
-                'eventTheme'
-            ],
-            'skip_null_values' => true
-        ]);
-        
+        $data = $serializer->serialize($eventThemes, 'json', SerializationContext::create()->setGroups(["theme"]));
+
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }
 }

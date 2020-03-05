@@ -4,14 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Repository\EventRepository;
-use App\Repository\EventThemeRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/api")
@@ -27,10 +24,7 @@ class EventController extends AbstractController
      */
     public function show(Event $event, SerializerInterface $serializer): Response
     {
-        $data = $serializer->serialize($event, 'json', [
-            'ignored_attributes' => ['event'],
-            'skip_null_values' => true
-        ]);
+        $data = $serializer->serialize($event, 'json', SerializationContext::create()->setGroups(["event"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }
@@ -45,10 +39,7 @@ class EventController extends AbstractController
     public function index(EventRepository $eventRepository, SerializerInterface $serializer): Response
     {
         $events = $eventRepository->findAll();
-        $data = $serializer->serialize($events, 'json', [
-            'ignored_attributes' => ['event'],
-            'skip_null_values' => true
-        ]);
+        $data = $serializer->serialize($events, 'json', SerializationContext::create()->setGroups(["event"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }

@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Fresh\VichUploaderSerializationBundle\Annotation as Fresh;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -26,7 +27,7 @@ class Picture
      * @var File|null
      * @Vich\UploadableField(mapping="animal_picture", fileNameProperty="url")
      * 
-     * @JMS\Groups({"animal", "picture"})
+     * @JMS\Exclude
      */
     private $imageFile;
 
@@ -34,6 +35,9 @@ class Picture
      * @ORM\Column(type="string", length=255)
      * 
      * @JMS\Groups({"animal", "picture"})
+     * @JMS\SerializedName("picture")
+     * 
+     * @Fresh\VichSerializableField("imageFile")
      */
     private $url;
 

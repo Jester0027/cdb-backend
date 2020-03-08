@@ -46,10 +46,9 @@ class AdminPictureController extends AbstractController
      */
     public function delete(Picture $picture, EntityManagerInterface $manager)
     {
-        // $animal = $picture->getAnimal();
-        // $animal->removePicture($picture);
-        // $manager->flush();
+        $manager->remove($picture);
+        $manager->flush();
 
-        return new Response(var_dump($picture));
+        return new JsonResponse(["code" => 200, "message" => "Picture(s) deleted"]);
     }
 }

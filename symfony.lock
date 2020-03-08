@@ -96,6 +96,9 @@
     "egulias/email-validator": {
         "version": "2.1.17"
     },
+    "fresh/vich-uploader-serialization-bundle": {
+        "version": "v2.4.3"
+    },
     "fzaninotto/faker": {
         "version": "v1.9.1"
     },
@@ -178,6 +181,9 @@
         "files": [
             "./config/packages/lexik_jwt_authentication.yaml"
         ]
+    },
+    "monolog/monolog": {
+        "version": "1.25.3"
     },
     "namshi/jose": {
         "version": "7.2.3"

@@ -4,13 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Refuge;
 use App\Repository\RefugeRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/api")
@@ -27,15 +26,7 @@ class RefugeController extends AbstractController
      */
     public function show(Request $request, Refuge $refuge, SerializerInterface $serializer): Response
     {
-        $getAnimals = $request->query->get('animals') === "true" ? true : false;
-        $data = $serializer->serialize($refuge, 'json', [
-            "ignored_attributes" => [
-                'refuge',
-                $getAnimals ? '' : 'animals',
-                'animalCategory'
-            ],
-            "skip_null_values" => true,
-        ]);
+        $data = $serializer->serialize($refuge, 'json', SerializationContext::create()->setGroups(["refuge"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }
@@ -45,16 +36,8 @@ class RefugeController extends AbstractController
      */
     public function index(RefugeRepository $refugeRepository, SerializerInterface $serializer, Request $request)
     {
-        $getAnimals = $request->query->get('animals') === "true" ? true : false;
         $refuges = $refugeRepository->findAll();
-        $data = $serializer->serialize($refuges, 'json', [
-            'ignored_attributes' => [
-                'refuge',
-                $getAnimals ? '' : 'animals',
-                'animalCategory'
-            ],
-            'skip_null_values' => true
-        ]);
+        $data = $serializer->serialize($refuges, 'json', SerializationContext::create()->setGroups(["refuge"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }

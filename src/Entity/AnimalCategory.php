@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnimalCategoryRepository")
@@ -15,16 +16,22 @@ class AnimalCategory
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"animal", "category"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"animal", "category"})
      */
     private $name;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Animal", mappedBy="animalCategory")
+     * 
+     * @JMS\Groups({"category"})
      */
     private $animals;
 

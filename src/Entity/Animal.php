@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnimalRepository")
@@ -16,31 +17,43 @@ class Animal
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $race;
 
     /**
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $height;
 
     /**
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $weight;
 
     /**
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $age;
 
@@ -49,38 +62,52 @@ class Animal
      * false: femelle
      * 
      * @ORM\Column(type="boolean")
+     * 
+     * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $gender;
 
     /**
      * @ORM\Column(type="integer")
+     * 
+     * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="text")
+     * 
+     * @JMS\Groups({"animal"})
      */
     private $attitude;
 
     /**
      * @ORM\Column(type="text")
+     * 
+     * @JMS\Groups({"animal"})
      */
     private $description;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AnimalCategory", inversedBy="animals")
      * @ORM\JoinColumn(nullable=false)
+     * 
+     * @JMS\Groups({"animal"})
      */
     private $animalCategory;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Refuge", inversedBy="animals")
      * @ORM\JoinColumn(nullable=false)
+     * 
+     * @JMS\Groups({"animal"})
      */
     private $refuge;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Picture", mappedBy="animal", orphanRemoval=true, cascade={"persist"})
+     * 
+     * @JMS\Groups({"animal"})
      */
     private $pictures;
 

@@ -3,14 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\AnimalCategory;
+use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\SerializationContext;
 use App\Repository\AnimalCategoryRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/api")
@@ -26,19 +24,10 @@ class AnimalCategoryController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function show(
-        Request $request,
         AnimalCategory $animalCategory,
         SerializerInterface $serializer
     ): Response {
-        $getAnimals = $request->query->get('animals') === "true" ? true : false;
-        $data = $serializer->serialize($animalCategory, 'json', [
-            'ignored_attributes' => [
-                'animalCategory',
-                $getAnimals ? '' : 'animals',
-                'refuge'
-            ],
-            'skip_null_values' => true
-        ]);
+        $data = $serializer->serialize($animalCategory, 'json', SerializationContext::create()->setGroups(["category"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }
@@ -52,20 +41,11 @@ class AnimalCategoryController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index(
-        Request $request,
         AnimalCategoryRepository $animalCategoryRepository,
         SerializerInterface $serializer
     ): Response {
-        $getAnimals = $request->query->get('animals') === "true" ? true : false;
         $animalCategories = $animalCategoryRepository->findAll();
-        $data = $serializer->serialize($animalCategories, 'json', [
-            'ignored_attributes' => [
-                'animalCategory',
-                $getAnimals ? '' : 'animals',
-                'refuge'
-            ],
-            'skip_null_values' => true
-        ]);
+        $data = $serializer->serialize($animalCategories, 'json', SerializationContext::create()->setGroups(["category"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }

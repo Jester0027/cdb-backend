@@ -32,8 +32,8 @@ class AdminEventController extends AbstractController
         EntityManagerInterface $manager
     ): JsonResponse {
         $event = $serializer->deserialize($request->getContent(), Event::class, 'json');
-        $themeName = $event->getEventTheme()->getName();
-        $eventTheme = $eventThemeRepository->findOneBy(["name" => $themeName]);
+        $themeSlug = $event->getEventTheme()->getSlug();
+        $eventTheme = $eventThemeRepository->findOneBy(["slug" => $themeSlug]);
         $event->setEventTheme($eventTheme);
         $manager->persist($event);
         $manager->flush();
@@ -56,8 +56,8 @@ class AdminEventController extends AbstractController
         EntityManagerInterface $manager
     ): JsonResponse {
         $data = json_decode($request->getContent());
-        $themeName = $data->eventTheme->name ?? '';
-        $theme = $eventThemeRepository->findOneBy(["name" => $themeName]);
+        $themeSlug = $data->eventTheme->slug ?? '';
+        $theme = $eventThemeRepository->findOneBy(["slug" => $themeSlug]);
         $data->eventTheme = $theme;
         foreach ($data as $key => $value) {
             if ($key && !empty($value)) {

@@ -35,10 +35,10 @@ class AdminAnimalController extends AbstractController
         EntityManagerInterface $manager
     ) {
         $animal = $serializer->deserialize($request->getContent(), Animal::class, 'json');
-        $categoryName = $animal->getAnimalCategory()->getName();
-        $refugeName = $animal->getRefuge()->getName();
-        $category = $animalCategoryRepository->findOneBy(["name" => $categoryName]);
-        $refuge = $refugeRepository->findOneBy(["name" => $refugeName]);
+        $categorySlug = $animal->getAnimalCategory()->getSlug();
+        $refugeSlug = $animal->getRefuge()->getSlug();
+        $category = $animalCategoryRepository->findOneBy(["slug" => $categorySlug]);
+        $refuge = $refugeRepository->findOneBy(["slug" => $refugeSlug]);
         $animal->setRefuge($refuge)
             ->setAnimalCategory($category);
         $manager->persist($animal);
@@ -66,10 +66,10 @@ class AdminAnimalController extends AbstractController
         EntityManagerInterface $manager
     ) {
         $data = json_decode($request->getContent());
-        $categoryName = $data->animalCategory->name ?? '';
-        $refugeName = $data->refuge->name ?? '';
-        $category = $animalCategoryRepository->findOneBy(["name" => $categoryName]);
-        $refuge = $refugeRepository->findOneBy(["name" => $refugeName]);
+        $categorySlug = $data->animalCategory->slug ?? '';
+        $refugeSlug = $data->refuge->slug ?? '';
+        $category = $animalCategoryRepository->findOneBy(["slug" => $categorySlug]);
+        $refuge = $refugeRepository->findOneBy(["slug" => $refugeSlug]);
         $data->animalCategory = $category;
         $data->refuge = $refuge;
         foreach ($data as $key => $value) {

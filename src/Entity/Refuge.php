@@ -3,9 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RefugeRepository")
@@ -27,6 +28,16 @@ class Refuge
      * @JMS\Groups({"animal", "refuge"})
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Gedmo\Slug(fields={"name"})
+     * 
+     * @JMS\Groups({"animal", "refuge"})
+     *
+     * @var string
+     */
+    private $slug;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -179,6 +190,18 @@ class Refuge
                 $animal->setRefuge(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

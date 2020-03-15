@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Repository\EventRepository;
+use App\Representation\EventsPagination;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/api")
@@ -36,9 +38,11 @@ class EventController extends AbstractController
      * @param \Symfony\Component\Serializer\SerializerInterface $serializer
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function index(EventRepository $eventRepository, SerializerInterface $serializer): Response
+    public function index(EventRepository $eventRepository, SerializerInterface $serializer, Request $request): Response
     {
-        $events = $eventRepository->findAll();
+        $limit = $request->query->getInt('limit', 10);
+        $page = $request->query->getInt('page', 1);
+        $events = new EventsPagination($eventRepository->search($limit, $page));
         $data = $serializer->serialize($events, 'json', SerializationContext::create()->setGroups(["event"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);

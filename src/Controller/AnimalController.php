@@ -4,11 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Animal;
 use App\Repository\AnimalRepository;
+use App\Representation\AnimalsPagination;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use JMS\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/api")
@@ -36,9 +38,11 @@ class AnimalController extends AbstractController
      * @param \Symfony\Component\Serializer\SerializerInterface $serializer
      * @return Symfony\Component\HttpFoundation\Response
      */
-    public function index(AnimalRepository $animalRepository, SerializerInterface $serializer): Response
+    public function index(AnimalRepository $animalRepository, SerializerInterface $serializer, Request $request): Response
     {
-        $animals = $animalRepository->findAll();
+        $limit = $request->query->getInt('limit', 10);
+        $page = $request->query->getInt('page', 1);
+        $animals = new AnimalsPagination($animalRepository->search($limit, $page));
         $data = $serializer->serialize($animals, 'json', SerializationContext::create()->setGroups(["animal"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);

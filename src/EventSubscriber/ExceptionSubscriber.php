@@ -2,10 +2,10 @@
 
 namespace App\EventSubscriber;
 
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -24,6 +24,11 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 break;
             case $this->exception instanceof MethodNotAllowedHttpException:
                 $this->setExceptionResponse("method not allowed");
+                break;
+            case $this->exception instanceof Exception:
+                $data = ["message" => 'Error : ' . $this->exception->getMessage()];
+                $response = new JsonResponse($data);
+                $this->event->setResponse($response);
                 break;
         }
     }

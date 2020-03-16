@@ -9,7 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 abstract class AbstractRepository extends ServiceEntityRepository
 {
-    protected function paginate(QueryBuilder $qb, $limit = 10, $currentPage = 1)
+    protected function paginate(QueryBuilder $qb, $limit, $currentPage = 1)
     {
         if (0 >= $limit || 0 >= $currentPage) {
             throw new \LogicException('$limit & $offset must be greater than 0.');

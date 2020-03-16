@@ -40,9 +40,8 @@ class AnimalController extends AbstractController
      */
     public function index(AnimalRepository $animalRepository, SerializerInterface $serializer, Request $request): Response
     {
-        $limit = $request->query->getInt('limit', 10);
         $page = $request->query->getInt('page', 1);
-        $animals = new AnimalsPagination($animalRepository->search($limit, $page));
+        $animals = new AnimalsPagination($animalRepository->search(10, $page));
         $data = $serializer->serialize($animals, 'json', SerializationContext::create()->setGroups(["animal"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);

@@ -40,9 +40,8 @@ class EventController extends AbstractController
      */
     public function index(EventRepository $eventRepository, SerializerInterface $serializer, Request $request): Response
     {
-        $limit = $request->query->getInt('limit', 10);
         $page = $request->query->getInt('page', 1);
-        $events = new EventsPagination($eventRepository->search($limit, $page));
+        $events = new EventsPagination($eventRepository->search(10, $page));
         $data = $serializer->serialize($events, 'json', SerializationContext::create()->setGroups(["event"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);

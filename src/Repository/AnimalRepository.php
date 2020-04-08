@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Animal;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
@@ -12,11 +11,20 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Animal[]    findAll()
  * @method Animal[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AnimalRepository extends ServiceEntityRepository
+class AnimalRepository extends AbstractRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Animal::class);
+    }
+
+    public function search($limit, $page)
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->select('a')
+        ;
+
+        return $this->paginate($qb, $limit, $page);
     }
 
     // /**

@@ -2,12 +2,11 @@
 
 namespace App\EventSubscriber;
 
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExceptionSubscriber implements EventSubscriberInterface
 {
@@ -19,25 +18,31 @@ class ExceptionSubscriber implements EventSubscriberInterface
         $this->exception = $event->getException();
         $this->event = $event;
         switch ($this->exception) {
-            case $this->exception instanceof NotFoundHttpException:
-                $this->setExceptionResponse("resource not found");
+            case $this->exception instanceof HttpException:
+                $this->httpExceptionHandler();
                 break;
-            case $this->exception instanceof MethodNotAllowedHttpException:
-                $this->setExceptionResponse("method not allowed");
+            case $this->exception instanceof Exception:
+                $this->exceptionHandler();
                 break;
         }
     }
 
-    /**
-     * @param \Symfony\Component\HttpKernel\Event\ExceptionEvent $event
-     * @param \Symfony\Component\HttpKernel\Exception\HttpException $exception
-     * @param string $message
-     * @return void
-     */
-    private function setExceptionResponse(string $message = "Exception caught")
+    private function httpExceptionHandler()
     {
-        $data = ["errorCode" => $this->exception->getStatusCode(), "message" => $message];
+        $data = [
+            "code" => $this->exception->getStatusCode(), 
+            "message" => $this->exception->getMessage()
+        ];
         $response = new JsonResponse($data, $this->exception->getStatusCode());
+        $this->event->setResponse($response);
+    }
+
+    private function exceptionHandler()
+    {
+        $data = [
+            "message" => $this->exception->getMessage()
+        ];
+        $response = new JsonResponse($data);
         $this->event->setResponse($response);
     }
 

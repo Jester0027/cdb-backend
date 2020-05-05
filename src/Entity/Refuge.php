@@ -81,9 +81,17 @@ class Refuge
      */
     private $animals;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="refuges")
+     * 
+     * @JMS\Groups({"users"})
+     */
+    private $managers;
+
     public function __construct()
     {
         $this->animals = new ArrayCollection();
+        $this->managers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -202,6 +210,34 @@ class Refuge
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getManagers(): Collection
+    {
+        return $this->managers;
+    }
+
+    public function addManager(User $manager): self
+    {
+        if (!$this->managers->contains($manager)) {
+            $this->managers[] = $manager;
+            $manager->addRefuge($this);
+        }
+
+        return $this;
+    }
+
+    public function removeManager(User $manager): self
+    {
+        if ($this->managers->contains($manager)) {
+            $this->managers->removeElement($manager);
+            $manager->removeRefuge($this);
+        }
 
         return $this;
     }

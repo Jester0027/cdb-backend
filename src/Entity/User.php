@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -43,6 +45,18 @@ class User implements UserInterface
      * @JMS\Groups({"password"})
      */
     private $password;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Refuge", inversedBy="managers")
+     * 
+     * @JMS\Groups({"refuges"})
+     */
+    private $refuges;
+
+    public function __construct()
+    {
+        $this->refuges = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,5 +134,31 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection|Refuge[]
+     */
+    public function getRefuges(): Collection
+    {
+        return $this->refuges;
+    }
+
+    public function addRefuge(Refuge $refuge): self
+    {
+        if (!$this->refuges->contains($refuge)) {
+            $this->refuges[] = $refuge;
+        }
+
+        return $this;
+    }
+
+    public function removeRefuge(Refuge $refuge): self
+    {
+        if ($this->refuges->contains($refuge)) {
+            $this->refuges->removeElement($refuge);
+        }
+
+        return $this;
     }
 }

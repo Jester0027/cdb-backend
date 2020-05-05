@@ -5,13 +5,13 @@ namespace App\Controller;
 use App\Entity\User;
 use JMS\Serializer\SerializerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
@@ -71,11 +71,11 @@ class SecurityController extends AbstractController
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @return void
      */
-    public function checkCredentials(Request $request, JWTEncoderInterface $encoder)
+    public function checkCredentials(SerializerInterface $serializer)
     {
-        $token = $request->headers->get('Authorization');
-        $token = explode(" ", $token)[1];
-        $decodedToken = $encoder->decode($token);
-        return $this->json(["payload" => $decodedToken]);
+        $user = $this->getUser();
+        $data = $serializer->serialize($user, 'json', SerializationContext::create()->setGroups(["user"]));
+        
+        return new Response($data, 200, ["Content-Type" => "application/json"]);
     }
 }

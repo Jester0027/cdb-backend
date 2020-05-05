@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use Exception;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -21,6 +22,9 @@ class ExceptionSubscriber implements EventSubscriberInterface
             case $this->exception instanceof HttpException:
                 $this->httpExceptionHandler();
                 break;
+            case $this->exception instanceof JWTDecodeFailureException:
+                $this->jwtExceptionHandler();
+                break;
             case $this->exception instanceof Exception:
                 $this->exceptionHandler();
                 break;
@@ -34,6 +38,16 @@ class ExceptionSubscriber implements EventSubscriberInterface
             "message" => $this->exception->getMessage()
         ];
         $response = new JsonResponse($data, $this->exception->getStatusCode());
+        $this->event->setResponse($response);
+    }
+
+    private function jwtExceptionHandler()
+    {
+        $data = [
+            "reason" => $this->exception->getReason(),
+            "message" => $this->exception->getMessage()
+        ];
+        $response = new JsonResponse($data, 401);
         $this->event->setResponse($response);
     }
 

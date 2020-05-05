@@ -3,15 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use JMS\Serializer\SerializerInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use JMS\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * @Route("/api")
@@ -70,12 +71,11 @@ class SecurityController extends AbstractController
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @return void
      */
-    public function login(Request $request)
+    public function checkCredentials(Request $request, JWTEncoderInterface $encoder)
     {
-        $user = $this->getUser();
-        return $this->json([
-            "email" => $user->getEmail(),
-            "roles" => $user->getRoles()
-        ]);
+        $token = $request->headers->get('Authorization');
+        $token = explode(" ", $token)[1];
+        $decodedToken = $encoder->decode($token);
+        return $this->json(["payload" => $decodedToken]);
     }
 }

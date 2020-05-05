@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/api/admin")
@@ -19,6 +20,7 @@ class AdminAnimalController extends AbstractController
 {
     /**
      * @Route("/animals", name="new_animal", methods={"POST"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \App\Repository\RefugeRepository $refugeRepository
@@ -49,6 +51,7 @@ class AdminAnimalController extends AbstractController
 
     /**
      * @Route("/animals/{id}", name="update_animal", methods={"PUT"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \App\Entity\Animal $animal
@@ -85,6 +88,7 @@ class AdminAnimalController extends AbstractController
 
     /**
      * @Route("/animals/{id}", name="delete_animal", methods={"DELETE"})
+     * @IsGranted("ROLE_MANAGER")
      * 
      */
     public function delete(Animal $animal, EntityManagerInterface $manager)

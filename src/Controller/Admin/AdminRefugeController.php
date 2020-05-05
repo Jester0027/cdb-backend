@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/api/admin")
@@ -17,6 +18,7 @@ class AdminRefugeController extends AbstractController
 {
     /**
      * @Route("/refuges", name="new_refuge", methods={"POST"})
+     * @IsGranted("ROLE_SUPERADMIN")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\Serializer\SerializerInterface $serializer
@@ -37,6 +39,7 @@ class AdminRefugeController extends AbstractController
 
     /**
      * @Route("/refuges/{id}", name="update_refuge", methods={"PUT"})
+     * @IsGranted("ROLE_SUPERADMIN")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \App\Entity\Refuge $refugeToUpdate

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/api/admin")
@@ -17,6 +18,7 @@ class AdminEventThemeController extends AbstractController
 {
     /**
      * @Route("/event_themes", name="create_event_theme", methods={"POST"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\Serializer\SerializerInterface $serializer
@@ -37,6 +39,7 @@ class AdminEventThemeController extends AbstractController
 
     /**
      * @Route("/event_themes/{id}", name="update_event_theme", methods={"PUT"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \App\Entity\EventTheme $eventTheme
@@ -62,6 +65,7 @@ class AdminEventThemeController extends AbstractController
 
     /**
      * @Route("/event_themes/{id}", name="delete_event_theme", methods={"DELETE"})
+     * @IsGranted("ROLE_SUPERADMIN")
      *
      * @param \App\Entity\EventTheme $eventTheme
      * @param \Doctrine\ORM\EntityManagerInterface $manager

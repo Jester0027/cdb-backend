@@ -6,10 +6,10 @@ use App\Entity\Animal;
 use App\Entity\Picture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/api/admin")
@@ -18,6 +18,7 @@ class AdminPictureController extends AbstractController
 {
     /**
      * @Route("/picture/{id}", name="add_picture", methods={"POST"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \App\Entity\Animal $animalToUpdate
@@ -43,6 +44,7 @@ class AdminPictureController extends AbstractController
 
     /**
      * @Route("/picture/{id}", name="delete_picture", methods={"DELETE"})
+     * @IsGranted("ROLE_MANAGER")
      */
     public function delete(Picture $picture, EntityManagerInterface $manager)
     {

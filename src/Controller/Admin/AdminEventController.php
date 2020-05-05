@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/api/admin")
@@ -18,6 +19,7 @@ class AdminEventController extends AbstractController
 {
     /**
      * @Route("/events", name="create_event", methods={"POST"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \App\Repository\EventThemeRepository $eventThemeRepository
@@ -43,6 +45,7 @@ class AdminEventController extends AbstractController
 
     /**
      * @Route("/events/{id}", name="update_event", methods={"PUT"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \App\Entity\Event $eventToUpdate
@@ -72,6 +75,7 @@ class AdminEventController extends AbstractController
 
     /**
      * @Route("/events/{id}", name="delete_event", methods={"DELETE"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \App\Entity\Event $event
      * @param \Doctrine\ORM\EntityManagerInterface $manager

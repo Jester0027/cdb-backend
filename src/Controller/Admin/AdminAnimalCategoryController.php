@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/api/admin")
@@ -17,6 +18,7 @@ class AdminAnimalCategoryController extends AbstractController
 {
     /**
      * @Route("/animal_categories", name="create_animal_category", methods={"POST"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Symfony\Component\Serializer\SerializerInterface $serializer
@@ -37,6 +39,7 @@ class AdminAnimalCategoryController extends AbstractController
 
     /**
      * @Route("/animal_categories/{id}", name="update_animal_category", methods={"PUT"})
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \App\Entity\AnimalCategory $animalCategoryToUpdate
@@ -62,6 +65,7 @@ class AdminAnimalCategoryController extends AbstractController
 
     /**
      * @Route("/animal_categories/{id}", name="delete_animal_category", methods={"DELETE"})
+     * @IsGranted("ROLE_SUPERADMIN")
      *
      * @param \App\Entity\AnimalCategory $animalCategory
      * @param \Doctrine\ORM\EntityManagerInterface $manager

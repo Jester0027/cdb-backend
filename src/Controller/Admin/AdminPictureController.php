@@ -29,7 +29,7 @@ class AdminPictureController extends AbstractController
         Animal $animalToUpdate,
         EntityManagerInterface $manager
     ): JsonResponse {
-        $pictures = $request->files->get('post')['imageFiles'];
+        $pictures = $request->files;
 
         foreach ($pictures as $file) {
             $picture = new Picture();
@@ -51,6 +51,6 @@ class AdminPictureController extends AbstractController
         $manager->remove($picture);
         $manager->flush();
 
-        return new JsonResponse(["code" => 200, "message" => "Picture(s) deleted"]);
+        return new JsonResponse(["code" => 200, "message" => "Picture deleted"]);
     }
 }

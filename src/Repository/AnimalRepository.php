@@ -27,6 +27,26 @@ class AnimalRepository extends AbstractRepository
         return $this->paginate($qb, $limit, $page);
     }
 
+    public function searchFromCategory($category, $limit, $page)
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.animalCategory = :category')
+            ->setParameter('category', $category)
+        ;
+
+        return $this->paginate($qb, $limit, $page);
+    }
+
+    public function searchFromRefuge($refuge, $limit, $page)
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->where('a.refuge = :refuge')
+            ->setParameter('refuge', $refuge)
+        ;
+
+        return $this->paginate($qb, $limit, $page);
+    }
+
     // /**
     //  * @return Animal[] Returns an array of Animal objects
     //  */

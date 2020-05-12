@@ -27,6 +27,16 @@ class EventRepository extends AbstractRepository
         return $this->paginate($qb, $limit, $page);
     }
 
+    public function searchFromTheme($theme, $limit, $page)
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->where("e.eventTheme = :theme")
+            ->setParameter("theme", $theme)
+        ;
+
+        return $this->paginate($qb, $limit, $page);
+    }
+
     // /**
     //  * @return Event[] Returns an array of Event objects
     //  */

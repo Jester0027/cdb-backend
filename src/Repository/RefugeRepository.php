@@ -12,11 +12,20 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method Refuge[]    findAll()
  * @method Refuge[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RefugeRepository extends ServiceEntityRepository
+class RefugeRepository extends AbstractRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Refuge::class);
+    }
+
+    public function search($limit, $page)
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->select('r')
+        ;
+
+        return $this->paginate($qb, $limit, $page);
     }
 
     // /**

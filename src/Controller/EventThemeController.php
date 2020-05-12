@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\EventTheme;
+use App\Repository\EventRepository;
 use JMS\Serializer\SerializerInterface;
 use App\Repository\EventThemeRepository;
+use App\Representation\EventsPagination;
 use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,9 +26,14 @@ class EventThemeController extends AbstractController
      * @param \Symfony\Component\Serializer\SerializerInterface $serializer
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function show(Request $request, EventTheme $eventTheme, SerializerInterface $serializer): Response
+    public function show(Request $request, EventTheme $eventTheme, SerializerInterface $serializer, EventRepository $eventRepository): Response
     {
-        $data = $serializer->serialize($eventTheme, 'json', SerializationContext::create()->setGroups(["theme"]));
+        if ($request->query->get('events')) {
+            $page = $request->query->getInt('page', 1);
+            $events = new EventsPagination($eventRepository->searchFromTheme($eventTheme, 10, $page));
+            $eventTheme->setEventsPagination($events);
+        }
+        $data = $serializer->serialize($eventTheme, 'json', SerializationContext::create()->setGroups(["theme", "events"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }

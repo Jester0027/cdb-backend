@@ -6,9 +6,12 @@ use App\Entity\AnimalCategory;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
 use App\Repository\AnimalCategoryRepository;
+use App\Repository\AnimalRepository;
+use App\Representation\AnimalsPagination;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/api")
@@ -25,9 +28,16 @@ class AnimalCategoryController extends AbstractController
      */
     public function show(
         AnimalCategory $animalCategory,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        Request $request,
+        AnimalRepository $animalRepository
     ): Response {
-        $data = $serializer->serialize($animalCategory, 'json', SerializationContext::create()->setGroups(["category"]));
+        if ($request->query->get('animals')) {
+            $page = $request->query->getInt('page', 1);
+            $animals = new AnimalsPagination($animalRepository->searchFromCategory($animalCategory, 10, $page));
+            $animalCategory->setAnimalsPagination($animals);
+        }
+        $data = $serializer->serialize($animalCategory, 'json', SerializationContext::create()->setGroups(["category", "animals"]));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }

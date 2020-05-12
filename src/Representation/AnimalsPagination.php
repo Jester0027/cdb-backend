@@ -8,11 +8,11 @@ class AnimalsPagination extends EntitiesPagerRepresentation
 {
     /**
      * @JMS\Type("array<App\Entity\Animal>")
-     * @JMS\Groups({"animal"})
+     * @JMS\Groups({"animal", "animals"})
      */
     public $data;
     /**
-     * @JMS\Groups({"animal"})
+     * @JMS\Groups({"animal", "animals"})
      */
     public $meta;
 }

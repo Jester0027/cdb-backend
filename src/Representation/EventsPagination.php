@@ -8,11 +8,11 @@ class EventsPagination extends EntitiesPagerRepresentation
 {
     /**
      * @JMS\Type("array<App\Entity\Event>")
-     * @JMS\Groups({"event"})
+     * @JMS\Groups({"event", "events"})
      */
     public $data;
     /**
-     * @JMS\Groups({"event"})
+     * @JMS\Groups({"event", "events"})
      */
     public $meta;
 }

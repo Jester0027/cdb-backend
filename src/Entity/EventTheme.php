@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Representation\EventsPagination;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EventThemeRepository")
@@ -25,6 +27,14 @@ class EventTheme
     /**
      * @ORM\Column(type="string", length=255)
      * 
+     * @Assert\NotBlank(message="Renseignez le nom du thème")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "Le nom doit faire au minimum {{ limit }} caractères",
+     *      maxMessage = "Le nom doit faire au maximum {{ limit }} caractères"
+     * )
+     * 
      * @JMS\Groups({"event", "theme"})
      */
     private $name;
@@ -42,6 +52,14 @@ class EventTheme
     /**
      * @ORM\Column(type="text")
      * 
+     * @Assert\NotBlank(message="Renseignez la description du thème")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 2550,
+     *      maxMessage = "La description doit faire au maximum {{ limit }} caractères",
+     *      minMessage = "La description doit faire au minimum {{ limit }} caractères"
+     * )
+     * 
      * @JMS\Groups({"theme"})
      */
     private $description;
@@ -49,9 +67,13 @@ class EventTheme
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="eventTheme")
      * 
-     * @JMS\Groups({"theme"})
      */
     private $event;
+
+    /**
+     * @JMS\Groups({"events"})
+     */
+    private $paginatedEvents;
 
     public function __construct()
     {
@@ -114,6 +136,13 @@ class EventTheme
                 $event->setEventTheme(null);
             }
         }
+
+        return $this;
+    }
+
+    public function setEventsPagination(EventsPagination $eventsPagination): self
+    {
+        $this->paginatedEvents = $eventsPagination;
 
         return $this;
     }

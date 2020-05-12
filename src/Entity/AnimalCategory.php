@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Representation\AnimalsPagination;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnimalCategoryRepository")
@@ -25,6 +27,14 @@ class AnimalCategory
     /**
      * @ORM\Column(type="string", length=255)
      * 
+     * @Assert\NotBlank(message="Renseignez le nom de la catégorie")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "Le nom doit faire au minimum {{ limit }} caractères",
+     *      maxMessage = "Le nom doit faire au maximum {{ limit }} caractères"
+     * )
+     * 
      * @JMS\Groups({"animal", "category"})
      */
     private $name;
@@ -41,10 +51,13 @@ class AnimalCategory
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Animal", mappedBy="animalCategory")
-     * 
-     * @JMS\Groups({"category"})
      */
     private $animals;
+
+    /**
+     * @JMS\Groups({"category"})
+     */
+    private $paginatedAnimals;
 
     public function __construct()
     {
@@ -95,6 +108,13 @@ class AnimalCategory
                 $animal->setAnimalCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function setAnimalsPagination(AnimalsPagination $animalsPagination): self
+    {
+        $this->paginatedAnimals = $animalsPagination;
 
         return $this;
     }

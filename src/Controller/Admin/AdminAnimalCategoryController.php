@@ -10,6 +10,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/api/admin")
@@ -28,13 +30,19 @@ class AdminAnimalCategoryController extends AbstractController
     public function create(
         Request $request,
         SerializerInterface $serializer,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        ValidatorInterface $validator
     ): JsonResponse {
         $animalCategory = $serializer->deserialize($request->getContent(), AnimalCategory::class, 'json');
+        $errors = $validator->validate($animalCategory);
+        if (count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+            return new Response($errors, 500, ["Content-Type" => "application/json"]);
+        }
         $manager->persist($animalCategory);
         $manager->flush();
 
-        return new JsonResponse(["code" => 201, "message" => "Created"]);
+        return new JsonResponse(["code" => 201, "message" => "Created"], 201);
     }
 
     /**
@@ -49,7 +57,9 @@ class AdminAnimalCategoryController extends AbstractController
     public function update(
         Request $request,
         AnimalCategory $animalCategoryToUpdate,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        ValidatorInterface $validator,
+        SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent());
         foreach ($data as $key => $value) {
@@ -58,6 +68,11 @@ class AdminAnimalCategoryController extends AbstractController
                 $setter = 'set' . $name;
                 $animalCategoryToUpdate->$setter($value);
             }
+        }
+        $errors = $validator->validate($animalCategoryToUpdate);
+        if(count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+            return new Response($errors, 500, ["Content-Type" => "application/json"]);
         }
         $manager->flush();
         return new JsonResponse(["code" => 200, "message" => "OK"]);

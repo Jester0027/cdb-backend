@@ -4,8 +4,18 @@ vich_uploader:
     mappings:
         animal_picture:
             uri_prefix: /images/animal_pictures
+            # uri_prefix: "%app.path.animal_picture%"
             upload_destination: "%kernel.project_dir%/public/images/animal_pictures"
             namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+        
+        event_picture:
+            uri_prefix: /images/event_pictures
+            # uri_prefix: "%app.path.event_picture%"
+            upload_destination: "%kernel.project_dir%/public/images/event_pictures"
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: false
+            delete_on_update: true
+            delete_on_remove: true
 
 
 

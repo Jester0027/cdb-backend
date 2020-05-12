@@ -11,6 +11,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Vich\UploaderBundle\Handler\UploadHandler;
+use Vich\UploaderBundle\Mapping\PropertyMapping;
+use Vich\UploaderBundle\Storage\StorageInterface;
 
 /**
  * @Route("/api/admin")
@@ -31,12 +36,18 @@ class AdminEventController extends AbstractController
         Request $request,
         EventThemeRepository $eventThemeRepository,
         SerializerInterface $serializer,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        ValidatorInterface $validator
     ): JsonResponse {
         $event = $serializer->deserialize($request->getContent(), Event::class, 'json');
         $themeSlug = $event->getEventTheme()->getSlug();
         $eventTheme = $eventThemeRepository->findOneBy(["slug" => $themeSlug]);
         $event->setEventTheme($eventTheme);
+        $errors = $validator->validate($event);
+        if (count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+            return new Response($errors, 500, ["Content-Type" => "application/json"]);
+        }
         $manager->persist($event);
         $manager->flush();
 
@@ -56,7 +67,9 @@ class AdminEventController extends AbstractController
         Request $request,
         EventThemeRepository $eventThemeRepository,
         Event $eventToUpdate,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        ValidatorInterface $validator,
+        SerializerInterface $serializer
     ): JsonResponse {
         $data = json_decode($request->getContent());
         $themeSlug = $data->eventTheme->slug ?? '';
@@ -69,8 +82,45 @@ class AdminEventController extends AbstractController
                 $eventToUpdate->$setter($value);
             }
         }
+        $errors = $validator->validate($eventToUpdate);
+        if (count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+            return new Response($errors, 500, ["Content-Type" => "application/json"]);
+        }
         $manager->flush();
         return new JsonResponse(["code" => 200, "message" => "OK"]);
+    }
+
+    /**
+     * @Route("/event_picture/{id}", name="add_event_picture", methods={"POST"})
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \App\Entity\Event $eventToUpdate
+     * @param \Doctrine\ORM\EntityManagerInterface $manager
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function changePicture(Request $request, Event $eventToUpdate, EntityManagerInterface $manager): JsonResponse
+    {
+        $picture = $request->files->get('event_picture');
+        $eventToUpdate->setImageFile($picture);
+        $manager->flush();
+
+        return new JsonResponse(["code" => 200, "message" => "updated event picture"]);
+    }
+
+    /**
+     * @Route("/event_picture/{id}", name="delete_event_picture", methods={"DELETE"})
+     *
+     * @param \App\Entity\Event $eventToUpdate
+     * @param \Doctrine\ORM\EntityManagerInterface $manager
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function deletePicture(Event $eventToUpdate, EntityManagerInterface $manager, UploadHandler $uploadHandler): JsonResponse
+    {
+        $uploadHandler->remove($eventToUpdate, 'imageFile');
+        $manager->flush();
+
+        return new JsonResponse(["code" => 200, "message" => "deleted event picture"]);
     }
 
     /**

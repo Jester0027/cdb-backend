@@ -46,8 +46,8 @@ class AnimalFixtures extends Fixture
             $refuge->setName($faker->company())
                 ->setAddress($faker->streetAddress())
                 ->setCity($faker->city())
-                ->setZipCode((int) $faker->postcode())
-                ->setCoordinates("$latitude , $longitude")
+                ->setZipCode($faker->postcode())
+                ->setCoordinates("$latitude,$longitude")
                 ->setDescription($faker->realText());
             $manager->persist($refuge);
 

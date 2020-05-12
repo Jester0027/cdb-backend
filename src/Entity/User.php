@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -26,6 +27,10 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * 
+     * @Assert\NotBlank(message="Renseignez l'adresse email")
+     * @Assert\Email(message="'{{ value }}' n'est pas une adresse e-mail valide")
+     * 
      * @JMS\SerializedName("username")
      * 
      * @JMS\Groups({"user"})
@@ -42,6 +47,8 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * 
+     * @Assert\NotBlank(message="Le champ du mot de passe est vide")
      * 
      * @JMS\Groups({"password"})
      */

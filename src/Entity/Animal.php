@@ -25,12 +25,28 @@ class Animal
     /**
      * @ORM\Column(type="string", length=255)
      * 
+     * @Assert\NotBlank(message="Renseignez le nom de l'animal")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "Le nom doit faire au minimum {{ limit }} caractères",
+     *      maxMessage = "Le nom doit faire au maximum {{ limit }} caractères"
+     * )
+     * 
      * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * 
+     * @Assert\NotBlank(message="Renseignez la race de l'animal")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "La race doit faire au minimum {{ limit }} caractères",
+     *      maxMessage = "La race doit faire au maximum {{ limit }} caractères"
+     * )
      * 
      * @JMS\Groups({"animal", "category", "refuge"})
      */
@@ -39,6 +55,9 @@ class Animal
     /**
      * @ORM\Column(type="integer")
      * 
+     * @Assert\GreaterThan(value=10, message="La taille de l'animal doit etre supérieure a {{ compared_value }} cm")
+     * @Assert\LessThan(value=200, message="La taille de l'animal doit etre inférieure a {{ compared_value }} cm")
+     * 
      * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $height;
@@ -46,12 +65,18 @@ class Animal
     /**
      * @ORM\Column(type="integer")
      * 
+     * @Assert\GreaterThan(value=1, message="La masse de l'animal doit etre supérieure a {{ compared_value }} kg")
+     * @Assert\LessThan(value=200, message="La masse de l'animal doit etre inférieure a {{ compared_value }} kg")
+     * 
      * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $weight;
 
     /**
      * @ORM\Column(type="integer")
+     * 
+     * @Assert\GreaterThan(value=1, message="L'age de l'animal doit etre supérieure a {{ compared_value }} an")
+     * @Assert\LessThan(value=30, message="L'age de l'animal doit etre inférieure a {{ compared_value }} ans")
      * 
      * @JMS\Groups({"animal", "category", "refuge"})
      */
@@ -77,12 +102,28 @@ class Animal
     /**
      * @ORM\Column(type="text")
      * 
+     * @Assert\NotBlank(message="Renseignez l'attitude de l'animal")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 2550,
+     *      minMessage = "L'attitude doit faire au minimum {{ limit }} caractères",
+     *      maxMessage = "L'attitude doit faire au maximum {{ limit }} caractères"
+     * )
+     * 
      * @JMS\Groups({"animal"})
      */
     private $attitude;
 
     /**
      * @ORM\Column(type="text")
+     * 
+     * @Assert\NotBlank(message="Renseignez la description de l'animal")
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 2550,
+     *      maxMessage = "La description doit faire au maximum {{ limit }} caractères",
+     *      minMessage = "La description doit faire au minimum {{ limit }} caractères"
+     * )
      * 
      * @JMS\Groups({"animal"})
      */

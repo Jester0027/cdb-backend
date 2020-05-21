@@ -70,23 +70,26 @@ class AdminEventController extends AbstractController
         EntityManagerInterface $manager,
         ValidatorInterface $validator,
         SerializerInterface $serializer
-    ): JsonResponse {
-        $data = json_decode($request->getContent());
-        $themeSlug = $data->eventTheme->slug ?? '';
-        $theme = $eventThemeRepository->findOneBy(["slug" => $themeSlug]);
-        $data->eventTheme = $theme;
-        foreach ($data as $key => $value) {
-            if ($key && !empty($value)) {
-                $name = $key;
-                $setter = 'set' . $name;
-                $eventToUpdate->$setter($value);
-            }
-        }
-        $errors = $validator->validate($eventToUpdate);
+    ) {
+        $event = $serializer->deserialize($request->getContent(), Event::class, 'json');
+        $themeSlug = $event->getEventTheme()->getSlug();
+        $eventTheme = $eventThemeRepository->findOneBy(["slug" => $themeSlug]);
+        $event->setEventTheme($eventTheme);
+        $errors = $validator->validate($event);
         if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, ["Content-Type" => "application/json"]);
         }
+        $eventToUpdate->setTitle($event->getTitle())
+            ->setEventDate($event->getEventDate())
+            ->setAddress($event->getAddress())
+            ->setCity($event->getCity())
+            ->setZipCode($event->getZipCode())
+            ->setCoordinates($event->getCoordinates())
+            ->setDescription($event->getDescription())
+            ->setEventTheme($event->getEventTheme())
+        ;
+
         $manager->flush();
         return new JsonResponse(["code" => 200, "message" => "OK"]);
     }

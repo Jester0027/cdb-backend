@@ -60,20 +60,14 @@ class AdminEventThemeController extends AbstractController
         EntityManagerInterface $manager,
         ValidatorInterface $validator,
         SerializerInterface $serializer
-    ): JsonResponse {
-        $data = json_decode($request->getContent());
-        foreach ($data as $key => $value) {
-            if ($key && !empty($value)) {
-                $name = $key;
-                $setter = 'set' . $name;
-                $eventThemeToUpdate->$setter($value);
-            }
-        }
-        $errors = $validator->validate($eventThemeToUpdate);
+    ) {
+        $eventTheme = $serializer->deserialize($request->getContent(), EventTheme::class, 'json');
+        $errors = $validator->validate($eventTheme);
         if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, ["Content-Type" => "application/json"]);
         }
+        $eventThemeToUpdate->setName($eventTheme->getName());
         $manager->flush();
         return new JsonResponse(["code" => 200, "message" => "OK"]);
     }

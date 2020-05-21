@@ -61,19 +61,20 @@ class AdminRefugeController extends AbstractController
         ValidatorInterface $validator,
         SerializerInterface $serializer
     ) {
-        $data = json_decode($request->getContent());
-        foreach ($data as $key => $value) {
-            if ($key && !empty($value)) {
-                $name = $key;
-                $setter = 'set' . $name;
-                $refugeToUpdate->$setter($value);
-            }
-        }
+        $refuge = $serializer->deserialize($request->getContent(), Refuge::class, 'json');
         $errors = $validator->validate($refugeToUpdate);
         if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, ["Content-Type" => "application/json"]);
         }
+        $refugeToUpdate->setName($refuge->getName())
+            ->setAddress($refuge->getAddress())
+            ->setCity($refuge->getCity())
+            ->setZipCode($refuge->getZipCode())
+            ->setCoordinates($refuge->getCoordinates())
+            ->setDescription($refuge->getDescription())
+        ;
+        
         $manager->flush();
         return new JsonResponse(["code" => 200, "message" => "OK"]);
     }

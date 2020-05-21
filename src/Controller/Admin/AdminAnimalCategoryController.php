@@ -60,20 +60,16 @@ class AdminAnimalCategoryController extends AbstractController
         EntityManagerInterface $manager,
         ValidatorInterface $validator,
         SerializerInterface $serializer
-    ): JsonResponse {
-        $data = json_decode($request->getContent());
-        foreach ($data as $key => $value) {
-            if ($key && !empty($value)) {
-                $name = $key;
-                $setter = 'set' . $name;
-                $animalCategoryToUpdate->$setter($value);
-            }
-        }
-        $errors = $validator->validate($animalCategoryToUpdate);
+    ) {
+        $animalCategory = $serializer->deserialize($request->getContent(), AnimalCategory::class, 'json');
+
+        $errors = $validator->validate($animalCategory);
         if(count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, ["Content-Type" => "application/json"]);
         }
+        $animalCategoryToUpdate->setName($animalCategory->getName());
+
         $manager->flush();
         return new JsonResponse(["code" => 200, "message" => "OK"]);
     }

@@ -79,25 +79,31 @@ class AdminAnimalController extends AbstractController
         ValidatorInterface $validator,
         SerializerInterface $serializer
     ) {
-        $data = json_decode($request->getContent());
-        $categorySlug = $data->animalCategory->slug ?? '';
-        $refugeSlug = $data->refuge->slug ?? '';
+        $animal = $serializer->deserialize($request->getContent(), Animal::class, 'json');
+        $categorySlug = $animal->getAnimalCategory()->getSlug();
+        $refugeSlug = $animal->getRefuge()->getSlug();
         $category = $animalCategoryRepository->findOneBy(["slug" => $categorySlug]);
         $refuge = $refugeRepository->findOneBy(["slug" => $refugeSlug]);
-        $data->animalCategory = $category;
-        $data->refuge = $refuge;
-        foreach ($data as $key => $value) {
-            if ($key && !empty($value)) {
-                $name = $key;
-                $setter = 'set' . $name;
-                $animalToUpdate->$setter($value);
-            }
-        }
-        $errors = $validator->validate($animalToUpdate);
+        $animal->setRefuge($refuge)
+            ->setAnimalCategory($category);
+        
+        $errors = $validator->validate($animal);
         if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, ["Content-Type" => "application/json"]);
         }
+        $animalToUpdate->setName($animal->getName())
+            ->setRace($animal->getRace())
+            ->setHeight($animal->getHeight())
+            ->setWeight($animal->getWeight())
+            ->setAge($animal->getHeight())
+            ->setGender($animal->getGender())
+            ->setAttitude($animal->getAttitude())
+            ->setDescription($animal->getDescription())
+            ->setAnimalCategory($animal->getAnimalCategory())
+            ->setRefuge($animal->getRefuge())
+        ;
+
         $manager->flush();
         return new JsonResponse(["code" => 200, "message" => "OK"]);
     }

@@ -93,13 +93,6 @@ class Animal
     private $gender;
 
     /**
-     * @ORM\Column(type="integer")
-     * 
-     * @JMS\Groups({"animal", "category", "refuge"})
-     */
-    private $price;
-
-    /**
      * @ORM\Column(type="text")
      * 
      * @Assert\NotBlank(message="Renseignez l'attitude de l'animal")
@@ -237,18 +230,6 @@ class Animal
     public function setGender(bool $gender): self
     {
         $this->gender = $gender;
-
-        return $this;
-    }
-
-    public function getPrice(): ?int
-    {
-        return $this->price;
-    }
-
-    public function setPrice(int $price): self
-    {
-        $this->price = $price;
 
         return $this;
     }

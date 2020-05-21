@@ -96,7 +96,7 @@ class AdminAnimalController extends AbstractController
             ->setRace($animal->getRace())
             ->setHeight($animal->getHeight())
             ->setWeight($animal->getWeight())
-            ->setAge($animal->getHeight())
+            ->setAge($animal->getAge())
             ->setGender($animal->getGender())
             ->setAttitude($animal->getAttitude())
             ->setDescription($animal->getDescription())

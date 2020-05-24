@@ -17,8 +17,8 @@ class EventTheme
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
      * 
      * @JMS\Groups({"event", "theme"})
      */
@@ -65,7 +65,7 @@ class EventTheme
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="eventTheme")
+     * @ORM\OneToMany(targetEntity="App\Entity\Event", mappedBy="eventTheme", cascade={"remove"})
      * 
      */
     private $event;

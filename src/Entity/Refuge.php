@@ -19,7 +19,7 @@ class Refuge
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="guid")
      * 
      * @JMS\Groups({"animal", "refuge"})
      */
@@ -126,7 +126,7 @@ class Refuge
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Animal", mappedBy="refuge")
+     * @ORM\OneToMany(targetEntity="App\Entity\Animal", mappedBy="refuge", cascade={"remove"})
      */
     private $animals;
 

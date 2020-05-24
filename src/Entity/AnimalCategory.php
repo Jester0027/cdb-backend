@@ -17,8 +17,8 @@ class AnimalCategory
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="guid")
      * 
      * @JMS\Groups({"animal", "category"})
      */
@@ -50,7 +50,7 @@ class AnimalCategory
     private $slug;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Animal", mappedBy="animalCategory")
+     * @ORM\OneToMany(targetEntity="App\Entity\Animal", mappedBy="animalCategory", cascade={"remove"})
      */
     private $animals;
 

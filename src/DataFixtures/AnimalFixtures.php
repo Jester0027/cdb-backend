@@ -71,7 +71,6 @@ class AnimalFixtures extends Fixture
                 ->setWeight(rand(10, 50))
                 ->setAge(rand(1, 20))
                 ->setGender($gender === 1 ? true : false)
-                ->setPrice(rand(25, 100))
                 ->setAttitude($faker->realText())
                 ->setDescription($faker->realText())
                 ->setAnimalCategory($categories[rand(0, $numberOfCategories - 1)])

@@ -3,8 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use JMS\Serializer\SerializerInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,11 +37,23 @@ class AdminSecurityController extends AbstractController
         SerializerInterface $serializer
     ) {
         $content = json_decode($request->getContent());
-        if (isset($content->username, $content->password)) {
+        if (isset($content->username)) {
             $user = new User();
             $user->setEmail($content->username);
+            
+            $str = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890';
+            $special = '!@#$:;';
+            $password = '';
+            for ($i = 0; $i < 15; $i++) {
+                $password .= $str[mt_rand(0, strlen($str) - 1)];
+            }
+            for ($i = 0; $i < 5; $i++) {
+                $password .= $special[mt_rand(0, strlen($special) - 1)];
+            }
+            $password = str_shuffle($password);
+
             $user->setPassword($passwordEncoder->encodePassword($user, $content->password));
-            $user->setRoles($user->getRoles());
+            $user->setRoles(['ROLE_USER', 'ROLE_MANAGER']);
 
             $errors = $validator->validate($user);
             if (count($errors)) {
@@ -52,7 +66,7 @@ class AdminSecurityController extends AbstractController
 
             $data = [
                 "code" => 201,
-                "message" => "User created"
+                "message" => "User created with password $password"
             ];
 
             return new JsonResponse($data, 201);
@@ -60,9 +74,21 @@ class AdminSecurityController extends AbstractController
 
         $data = [
             "code" => 500,
-            "message" => "Renseignez les clés email et password"
+            "message" => "Renseignez le pseudo"
         ];
 
         return new JsonResponse($data, 500);
+    }
+
+    /**
+     * @Route("/users", name="users", methods={"GET"})
+     * @IsGranted("ROLE_SUPERADMIN")
+     */
+    public function getUsers(UserRepository $userRepository, SerializerInterface $serializer)
+    {
+        $users = $userRepository->findAll();
+        $data = $serializer->serialize($users, User::class, SerializationContext::create()->setGroups(['user']));
+
+        return new Response($data, 200, ["Content-Type" => "application/json"]);
     }
 }

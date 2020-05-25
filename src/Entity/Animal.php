@@ -7,6 +7,7 @@ use JMS\Serializer\Annotation as JMS;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AnimalRepository")
@@ -36,6 +37,16 @@ class Animal
      * @JMS\Groups({"animal", "category", "refuge"})
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Gedmo\Slug(fields={"name"})
+     * 
+     * @JMS\Groups({"animal", "category", "refuge"})
+     *
+     * @var string
+     */
+    private $slug;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -170,6 +181,18 @@ class Animal
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

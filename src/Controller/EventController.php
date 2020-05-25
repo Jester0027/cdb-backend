@@ -18,6 +18,20 @@ use Symfony\Component\HttpFoundation\Request;
 class EventController extends AbstractController
 {
     /**
+     * @Route("/events/slug/{slug}", name="show_event_slug", methods={"GET"})
+     *
+     * @param \App\Entity\Event $event
+     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function showFromSlug(Event $event, SerializerInterface $serializer): Response
+    {
+        $data = $serializer->serialize($event, 'json', SerializationContext::create()->setGroups(["event"]));
+
+        return new Response($data, 200, ["Content-Type" => "application/json"]);
+    }
+
+    /**
      * @Route("/events/{id}", name="show_event", methods={"GET"})
      *
      * @param \App\Entity\Event $event

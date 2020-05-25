@@ -18,6 +18,20 @@ use Symfony\Component\HttpFoundation\Request;
 class AnimalController extends AbstractController
 {
     /**
+     * @Route("/animals/slug/{slug}", name="show_animal_slug", methods={"GET"})
+     *
+     * @param \App\Entity\Animal $animal
+     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
+     * @return Symfony\Component\HttpFoundation\Response
+     */
+    public function showFromSlug(Animal $animal, SerializerInterface $serializer): Response
+    {
+        $data = $serializer->serialize($animal, 'json', SerializationContext::create()->setGroups(["animal"]));
+
+        return new Response($data, 200, ["Content-Type" => "application/json"]);
+    }
+
+    /**
      * @Route("/animals/{id}", name="show_animal", methods={"GET"})
      *
      * @param \App\Entity\Animal $animal

@@ -1,0 +1,5 @@
+deploymnent:
+  tasks:
+    - composer update
+    - php bin/console make:migration
+    - php bin/console d:m:m

@@ -1,5 +1,8 @@
 deploymnent:
   tasks:
+    - export DEPLOYPATH=~/api.etpa8594.odns.fr
+    - /bin/cp -fra ./* $DEPLOYPATH
+    - cd $DEPLOYPATH
     - composer update
     - php bin/console make:migration
     - php bin/console d:m:m

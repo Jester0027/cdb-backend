@@ -21,31 +21,13 @@ class RefugeController extends AbstractController
 {
     /**
      * @Route("/refuges/slug/{slug}", name="show_refuge_slug", methods={"GET"})
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \App\Entity\Refuge $refuge
-     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function showFromSlug(Request $request, Refuge $refuge, SerializerInterface $serializer, AnimalRepository $animalRepository): Response
-    {
-        if ($request->query->get('animals')) {
-            $page = $request->query->getInt('page', 1);
-            $animals = new AnimalsPagination($animalRepository->searchFromRefuge($refuge, 10, $page));
-            $refuge->setAnimalsPagination($animals);
-        }
-        $data = $serializer->serialize($refuge, 'json', SerializationContext::create()->setGroups(["refuge", "animals"]));
-
-        return new Response($data, 200, ["Content-Type" => "application/json"]);
-    }
-
-    /**
      * @Route("/refuges/{id}", name="show_refuge", methods={"GET"})
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \App\Entity\Refuge $refuge
-     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request $request
+     * @param Refuge $refuge
+     * @param SerializerInterface $serializer
+     * @param AnimalRepository $animalRepository
+     * @return Response
      */
     public function show(Request $request, Refuge $refuge, SerializerInterface $serializer, AnimalRepository $animalRepository): Response
     {
@@ -61,6 +43,11 @@ class RefugeController extends AbstractController
 
     /**
      * @Route("/refuges", name="refuge", methods={"GET"})
+     *
+     * @param RefugeRepository $refugeRepository
+     * @param SerializerInterface $serializer
+     * @param Request $request
+     * @return Response
      */
     public function index(RefugeRepository $refugeRepository, SerializerInterface $serializer, Request $request)
     {

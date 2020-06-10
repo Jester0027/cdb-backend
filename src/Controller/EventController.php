@@ -7,6 +7,7 @@ use App\Repository\EventRepository;
 use App\Representation\EventsPagination;
 use JMS\Serializer\SerializerInterface;
 use JMS\Serializer\SerializationContext;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,24 +20,11 @@ class EventController extends AbstractController
 {
     /**
      * @Route("/events/slug/{slug}", name="show_event_slug", methods={"GET"})
-     *
-     * @param \App\Entity\Event $event
-     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function showFromSlug(Event $event, SerializerInterface $serializer): Response
-    {
-        $data = $serializer->serialize($event, 'json', SerializationContext::create()->setGroups(["event"]));
-
-        return new Response($data, 200, ["Content-Type" => "application/json"]);
-    }
-
-    /**
      * @Route("/events/{id}", name="show_event", methods={"GET"})
      *
-     * @param \App\Entity\Event $event
-     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Event $event
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
      */
     public function show(Event $event, SerializerInterface $serializer): Response
     {
@@ -48,9 +36,10 @@ class EventController extends AbstractController
     /**
      * @Route("/events", name="events", methods={"GET"})
      *
-     * @param \App\Repository\EventRepository $eventRepository
-     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param EventRepository $eventRepository
+     * @param SerializerInterface $serializer
+     * @param Request $request
+     * @return JsonResponse
      */
     public function index(EventRepository $eventRepository, SerializerInterface $serializer, Request $request): Response
     {

@@ -1,5 +1,3 @@
 deploymnent:
   tasks:
-    - export DEPLOYPATH=~/api.etpa8594.odns.fr
-    - rsync -av --progress . $DEPLOYPATH --exclude ./src/Migrations
-    - /bin/cp -fra ./.env $DEPLOYPATH
+    - rsync -av --progress . ~/api.etpa8594.odns.fr/ --exclude="src/Migrations/" --exclude="./env.dev" --exclude".cpanel.yml" --exclude=".git/"

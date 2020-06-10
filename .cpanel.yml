@@ -1,9 +1,5 @@
 deploymnent:
   tasks:
     - export DEPLOYPATH=~/api.etpa8594.odns.fr
-    - rsync -av --progress ./* $DEPLOYPATH --exclude ./src/Migrations
+    - rsync -av --progress . $DEPLOYPATH --exclude ./src/Migrations
     - /bin/cp -fra ./.env $DEPLOYPATH
-    - cd $DEPLOYPATH
-    - composer update --quiet
-    - APP_ENV=dev php bin/console make:migration --quiet
-    - php bin/console d:m:m --quiet

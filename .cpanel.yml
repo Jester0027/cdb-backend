@@ -1,8 +1,7 @@
 deploymnent:
   tasks:
     - export DEPLOYPATH=~/api.etpa8594.odns.fr
-    - rm ./src/Migrations/*
-    - /bin/cp -fra ./* $DEPLOYPATH
+    - rsync -av --progress ./* $DEPLOYPATH --exclude ./src/Migrations
     - /bin/cp -fra ./.env $DEPLOYPATH
     - cd $DEPLOYPATH
     - composer update --quiet

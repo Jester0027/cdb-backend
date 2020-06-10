@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -20,43 +22,54 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="UUID")
      * @ORM\Column(type="guid")
-     * 
+     *
      * @JMS\Groups({"user"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * 
+     *
      * @Assert\NotBlank(message="Renseignez l'adresse email")
      * @Assert\Email(message="'{{ value }}' n'est pas une adresse e-mail valide")
-     * 
+     *
      * @JMS\SerializedName("username")
-     * 
+     *
      * @JMS\Groups({"user"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
-     * 
+     *
      * @JMS\Groups({"user"})
      */
     private $roles = [];
 
     /**
+     * @ORM\Column(type="string", length=70, nullable=true)
+     */
+    private $token;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $tokenExpirationDateTime;
+
+    /**
      * @var string The hashed password
+     *
      * @ORM\Column(type="string")
-     * 
+     *
      * @Assert\NotBlank(message="Le champ du mot de passe est vide")
-     * 
+     *
      * @JMS\Groups({"password"})
      */
     private $password;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Refuge", inversedBy="managers")
-     * 
+     *
      * @JMS\Groups({"refuges"})
      */
     private $refuges;
@@ -90,7 +103,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -112,12 +125,68 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+        if ($this->token) {
+            $expires = new DateTime('now');
+            $expires->modify('+30 minutes');
+            $this->setTokenExpirationDateTime($expires);
+        }
+        return $this;
+    }
+
+    public function checkToken(string $tokenToCheck): bool
+    {
+        $isExpired = new DateTime('now') > $this->getTokenExpirationDateTime();
+        $invalidToken = empty($this->getToken()) || $tokenToCheck !== $this->getToken() || $isExpired;
+        if ($invalidToken) {
+            if ($isExpired) {
+                $this->resetToken();
+            }
+            return false;
+        }
+        $this->resetToken();
+        return true;
+    }
+
+    public function generateToken(): self
+    {
+        $tokenGenerator = new UriSafeTokenGenerator();
+        $this->setToken($tokenGenerator->generateToken());
+        return $this;
+    }
+
+    public function resetToken(): self
+    {
+        $this->setToken(null);
+        $this->setTokenExpirationDateTime(null);
+        return $this;
+    }
+
+    public function getTokenExpirationDateTime(): ?DateTime
+    {
+        return $this->tokenExpirationDateTime;
+    }
+
+    public function setTokenExpirationDateTime(?DateTime $datetime): self
+    {
+        $this->tokenExpirationDateTime = $datetime;
+
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self

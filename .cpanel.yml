@@ -1,10 +1,10 @@
 deploymnent:
   tasks:
     - export DEPLOYPATH=~/api.etpa8594.odns.fr
-    - rm -fr ./src/Migrations/*
+    - rm ./src/Migrations/*
     - /bin/cp -fra ./* $DEPLOYPATH
     - /bin/cp -fra ./.env $DEPLOYPATH
     - cd $DEPLOYPATH
-    - composer update
+    - composer update --quiet
     - APP_ENV=dev php bin/console make:migration --quiet
     - php bin/console d:m:m --quiet

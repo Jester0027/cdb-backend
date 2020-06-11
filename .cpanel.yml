@@ -1,3 +1,7 @@
-deploymnent:
+deployment:
   tasks:
     - rsync -av --progress . ~/api.etpa8594.odns.fr/ --exclude="src/Migrations/" --exclude="./env.dev" --exclude".cpanel.yml" --exclude=".git/"
+    - cd ~/api.etpa8594.odns.fr/
+    - composer update --quiet
+    - APP_ENV=dev php bin/console make:migration --quiet
+    - php bin/console d:m:m --quiet

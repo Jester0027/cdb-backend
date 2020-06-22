@@ -6,6 +6,7 @@ use App\Entity\Animal;
 use App\Entity\Picture;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,15 +21,17 @@ class AdminPictureController extends AbstractController
      * @Route("/picture/{id}", name="add_picture", methods={"POST"})
      * @IsGranted("ROLE_MANAGER")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \App\Entity\Animal $animalToUpdate
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request $request
+     * @param Animal $animalToUpdate
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
      */
     public function add(
         Request $request,
         Animal $animalToUpdate,
         EntityManagerInterface $manager
-    ): JsonResponse {
+    ): JsonResponse
+    {
         $pictures = $request->files;
 
         foreach ($pictures as $file) {
@@ -45,6 +48,10 @@ class AdminPictureController extends AbstractController
     /**
      * @Route("/picture/{id}", name="delete_picture", methods={"DELETE"})
      * @IsGranted("ROLE_MANAGER")
+     *
+     * @param Picture $picture
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
      */
     public function delete(Picture $picture, EntityManagerInterface $manager)
     {

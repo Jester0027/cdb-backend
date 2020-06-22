@@ -22,17 +22,19 @@ class AdminEventThemeController extends AbstractController
      * @Route("/event_themes", name="create_event_theme", methods={"POST"})
      * @IsGranted("ROLE_MANAGER")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $manager
+     * @param ValidatorInterface $validator
+     * @return Response
      */
     public function create(
         Request $request,
         SerializerInterface $serializer,
         EntityManagerInterface $manager,
         ValidatorInterface $validator
-    ): JsonResponse {
+    ): Response
+    {
         $eventTheme = $serializer->deserialize($request->getContent(), EventTheme::class, 'json');
         $errors = $validator->validate($eventTheme);
         if (count($errors)) {
@@ -49,10 +51,12 @@ class AdminEventThemeController extends AbstractController
      * @Route("/event_themes/{id}", name="update_event_theme", methods={"PUT"})
      * @IsGranted("ROLE_MANAGER")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \App\Entity\EventTheme $eventTheme
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     * @param EventTheme $eventThemeToUpdate
+     * @param EntityManagerInterface $manager
+     * @param ValidatorInterface $validator
+     * @param SerializerInterface $serializer
+     * @return Response
      */
     public function update(
         Request $request,
@@ -60,7 +64,8 @@ class AdminEventThemeController extends AbstractController
         EntityManagerInterface $manager,
         ValidatorInterface $validator,
         SerializerInterface $serializer
-    ) {
+    )
+    {
         $eventTheme = $serializer->deserialize($request->getContent(), EventTheme::class, 'json');
         $errors = $validator->validate($eventTheme);
         if (count($errors)) {
@@ -76,9 +81,9 @@ class AdminEventThemeController extends AbstractController
      * @Route("/event_themes/{id}", name="delete_event_theme", methods={"DELETE"})
      * @IsGranted("ROLE_SUPERADMIN")
      *
-     * @param \App\Entity\EventTheme $eventTheme
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param EventTheme $eventTheme
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
      */
     public function delete(EventTheme $eventTheme, EntityManagerInterface $manager): JsonResponse
     {

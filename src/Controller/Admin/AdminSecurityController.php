@@ -41,7 +41,8 @@ class AdminSecurityController extends AbstractController
         ValidatorInterface $validator,
         SerializerInterface $serializer,
         TokenGeneratorInterface $tokenGenerator
-    ) {
+    )
+    {
         $content = json_decode($request->getContent());
         if (isset($content->username)) {
             $user = new User();
@@ -88,7 +89,7 @@ class AdminSecurityController extends AbstractController
     public function getUsers(UserRepository $userRepository, SerializerInterface $serializer)
     {
         $users = $userRepository->findAll();
-        $data = $serializer->serialize($users, User::class, SerializationContext::create()->setGroups(['user']));
+        $data = $serializer->serialize($users, 'json', SerializationContext::create()->setGroups(['user']));
 
         return new Response($data, 200, ["Content-Type" => "application/json"]);
     }

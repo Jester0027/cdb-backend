@@ -22,17 +22,19 @@ class AdminRefugeController extends AbstractController
      * @Route("/refuges", name="new_refuge", methods={"POST"})
      * @IsGranted("ROLE_SUPERADMIN")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return void
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $manager
+     * @param ValidatorInterface $validator
+     * @return JsonResponse|Response
      */
     public function create(
         Request $request,
         SerializerInterface $serializer,
         EntityManagerInterface $manager,
         ValidatorInterface $validator
-    ) {
+    )
+    {
         $refuge = $serializer->deserialize($request->getContent(), Refuge::class, 'json');
         $errors = $validator->validate($refuge);
         if (count($errors)) {
@@ -49,10 +51,12 @@ class AdminRefugeController extends AbstractController
      * @Route("/refuges/{id}", name="update_refuge", methods={"PUT"})
      * @IsGranted("ROLE_SUPERADMIN")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \App\Entity\Refuge $refugeToUpdate
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return void
+     * @param Request $request
+     * @param Refuge $refugeToUpdate
+     * @param EntityManagerInterface $manager
+     * @param ValidatorInterface $validator
+     * @param SerializerInterface $serializer
+     * @return JsonResponse|Response
      */
     public function update(
         Request $request,
@@ -60,7 +64,8 @@ class AdminRefugeController extends AbstractController
         EntityManagerInterface $manager,
         ValidatorInterface $validator,
         SerializerInterface $serializer
-    ) {
+    )
+    {
         $refuge = $serializer->deserialize($request->getContent(), Refuge::class, 'json');
         $errors = $validator->validate($refugeToUpdate);
         if (count($errors)) {
@@ -72,19 +77,18 @@ class AdminRefugeController extends AbstractController
             ->setCity($refuge->getCity())
             ->setZipCode($refuge->getZipCode())
             ->setCoordinates($refuge->getCoordinates())
-            ->setDescription($refuge->getDescription())
-        ;
-        
+            ->setDescription($refuge->getDescription());
+
         $manager->flush();
         return new JsonResponse(["code" => 200, "message" => "OK"]);
     }
-    
+
     /**
      * @Route("/refuges/{id}", name="delete_refuge", methods={"DELETE"})
      *
-     * @param \App\Entity\Refuge $refuge
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Refuge $refuge
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
      */
     public function delete(Refuge $refuge, EntityManagerInterface $manager): JsonResponse
     {

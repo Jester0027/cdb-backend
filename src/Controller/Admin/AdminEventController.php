@@ -26,11 +26,12 @@ class AdminEventController extends AbstractController
      * @Route("/events", name="create_event", methods={"POST"})
      * @IsGranted("ROLE_MANAGER")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \App\Repository\EventThemeRepository $eventThemeRepository
-     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     * @param EventThemeRepository $eventThemeRepository
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $manager
+     * @param ValidatorInterface $validator
+     * @return JsonResponse
      */
     public function create(
         Request $request,
@@ -38,7 +39,8 @@ class AdminEventController extends AbstractController
         SerializerInterface $serializer,
         EntityManagerInterface $manager,
         ValidatorInterface $validator
-    ): JsonResponse {
+    ): JsonResponse
+    {
         $event = $serializer->deserialize($request->getContent(), Event::class, 'json');
         $themeSlug = $event->getEventTheme()->getSlug();
         $eventTheme = $eventThemeRepository->findOneBy(["slug" => $themeSlug]);
@@ -58,10 +60,13 @@ class AdminEventController extends AbstractController
      * @Route("/events/{id}", name="update_event", methods={"PUT"})
      * @IsGranted("ROLE_MANAGER")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \App\Entity\Event $eventToUpdate
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     * @param EventThemeRepository $eventThemeRepository
+     * @param Event $eventToUpdate
+     * @param EntityManagerInterface $manager
+     * @param ValidatorInterface $validator
+     * @param SerializerInterface $serializer
+     * @return Response
      */
     public function update(
         Request $request,
@@ -70,7 +75,8 @@ class AdminEventController extends AbstractController
         EntityManagerInterface $manager,
         ValidatorInterface $validator,
         SerializerInterface $serializer
-    ) {
+    )
+    {
         $event = $serializer->deserialize($request->getContent(), Event::class, 'json');
         $themeSlug = $event->getEventTheme()->getSlug();
         $eventTheme = $eventThemeRepository->findOneBy(["slug" => $themeSlug]);
@@ -87,8 +93,7 @@ class AdminEventController extends AbstractController
             ->setZipCode($event->getZipCode())
             ->setCoordinates($event->getCoordinates())
             ->setDescription($event->getDescription())
-            ->setEventTheme($event->getEventTheme())
-        ;
+            ->setEventTheme($event->getEventTheme());
 
         $manager->flush();
         return new JsonResponse(["code" => 200, "message" => "OK"]);
@@ -97,10 +102,10 @@ class AdminEventController extends AbstractController
     /**
      * @Route("/event_picture/{id}", name="add_event_picture", methods={"POST"})
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \App\Entity\Event $eventToUpdate
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     * @param Event $eventToUpdate
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
      */
     public function changePicture(Request $request, Event $eventToUpdate, EntityManagerInterface $manager): JsonResponse
     {
@@ -114,9 +119,10 @@ class AdminEventController extends AbstractController
     /**
      * @Route("/event_picture/{id}", name="delete_event_picture", methods={"DELETE"})
      *
-     * @param \App\Entity\Event $eventToUpdate
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Event $eventToUpdate
+     * @param EntityManagerInterface $manager
+     * @param UploadHandler $uploadHandler
+     * @return JsonResponse
      */
     public function deletePicture(Event $eventToUpdate, EntityManagerInterface $manager, UploadHandler $uploadHandler): JsonResponse
     {
@@ -130,9 +136,9 @@ class AdminEventController extends AbstractController
      * @Route("/events/{id}", name="delete_event", methods={"DELETE"})
      * @IsGranted("ROLE_MANAGER")
      *
-     * @param \App\Entity\Event $event
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Event $event
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
      */
     public function delete(Event $event, EntityManagerInterface $manager): JsonResponse
     {

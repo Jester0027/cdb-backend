@@ -22,17 +22,19 @@ class AdminAnimalCategoryController extends AbstractController
      * @Route("/animal_categories", name="create_animal_category", methods={"POST"})
      * @IsGranted("ROLE_MANAGER")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param EntityManagerInterface $manager
+     * @param ValidatorInterface $validator
+     * @return JsonResponse|Response
      */
     public function create(
         Request $request,
         SerializerInterface $serializer,
         EntityManagerInterface $manager,
         ValidatorInterface $validator
-    ): JsonResponse {
+    )
+    {
         $animalCategory = $serializer->deserialize($request->getContent(), AnimalCategory::class, 'json');
         $errors = $validator->validate($animalCategory);
         if (count($errors)) {
@@ -49,10 +51,12 @@ class AdminAnimalCategoryController extends AbstractController
      * @Route("/animal_categories/{id}", name="update_animal_category", methods={"PUT"})
      * @IsGranted("ROLE_MANAGER")
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \App\Entity\AnimalCategory $animalCategoryToUpdate
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     * @param AnimalCategory $animalCategoryToUpdate
+     * @param EntityManagerInterface $manager
+     * @param ValidatorInterface $validator
+     * @param SerializerInterface $serializer
+     * @return JsonResponse|Response
      */
     public function update(
         Request $request,
@@ -60,11 +64,12 @@ class AdminAnimalCategoryController extends AbstractController
         EntityManagerInterface $manager,
         ValidatorInterface $validator,
         SerializerInterface $serializer
-    ) {
+    )
+    {
         $animalCategory = $serializer->deserialize($request->getContent(), AnimalCategory::class, 'json');
 
         $errors = $validator->validate($animalCategory);
-        if(count($errors)) {
+        if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, ["Content-Type" => "application/json"]);
         }
@@ -78,9 +83,9 @@ class AdminAnimalCategoryController extends AbstractController
      * @Route("/animal_categories/{id}", name="delete_animal_category", methods={"DELETE"})
      * @IsGranted("ROLE_SUPERADMIN")
      *
-     * @param \App\Entity\AnimalCategory $animalCategory
-     * @param \Doctrine\ORM\EntityManagerInterface $manager
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param AnimalCategory $animalCategory
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
      */
     public function delete(AnimalCategory $animalCategory, EntityManagerInterface $manager): JsonResponse
     {

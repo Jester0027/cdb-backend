@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f7bd3ac64944cc4e35799ed412112e4d",
+    "content-hash": "5aa459613d834ccba1c2385312b16073",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -3045,12 +3045,12 @@
             "version": "v2.1.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/whiteoctober/Pagerfanta.git",
+                "url": "https://github.com/BabDev/Pagerfanta.git",
                 "reference": "a53ff01d521648d9dbca19b93ac6bc75a59b0972"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/whiteoctober/Pagerfanta/zipball/a53ff01d521648d9dbca19b93ac6bc75a59b0972",
+                "url": "https://api.github.com/repos/BabDev/Pagerfanta/zipball/a53ff01d521648d9dbca19b93ac6bc75a59b0972",
                 "reference": "a53ff01d521648d9dbca19b93ac6bc75a59b0972",
                 "shasum": ""
             },
@@ -6870,20 +6870,20 @@
         },
         {
             "name": "symfony/twig-bundle",
-            "version": "v4.4.8",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/twig-bundle.git",
-                "reference": "79046e5189c5f4da923f395ccc11db930953c990"
+                "reference": "c83e606bdc54504a1b2bcd8807b5dd139187b4a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/twig-bundle/zipball/79046e5189c5f4da923f395ccc11db930953c990",
-                "reference": "79046e5189c5f4da923f395ccc11db930953c990",
+                "url": "https://api.github.com/repos/symfony/twig-bundle/zipball/c83e606bdc54504a1b2bcd8807b5dd139187b4a4",
+                "reference": "c83e606bdc54504a1b2bcd8807b5dd139187b4a4",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3",
+                "php": ">=7.1.3",
                 "symfony/http-foundation": "^4.3|^5.0",
                 "symfony/http-kernel": "^4.4",
                 "symfony/polyfill-ctype": "~1.8",
@@ -6941,7 +6941,7 @@
             ],
             "description": "Symfony TwigBundle",
             "homepage": "https://symfony.com",
-            "time": "2020-04-15T15:55:41+00:00"
+            "time": "2020-05-20T08:37:50+00:00"
         },
         {
             "name": "symfony/validator",
@@ -7497,6 +7497,7 @@
                 "page",
                 "paging"
             ],
+            "abandoned": "babdev/pagerfanta-bundle",
             "time": "2019-12-02T14:19:37+00:00"
         },
         {
@@ -7899,7 +7900,8 @@
     "platform": {
         "php": "^7.1.3",
         "ext-ctype": "*",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+        "ext-json": "*"
     },
     "platform-dev": []
 }

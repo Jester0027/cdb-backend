@@ -47,7 +47,7 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\Column(type="string", length=70, nullable=true)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $token;
 
@@ -132,11 +132,13 @@ class User implements UserInterface
 
     public function setToken(?string $token): self
     {
-        $this->token = $token;
-        if ($this->token) {
+        if ($token) {
+            $this->token = password_hash($token, PASSWORD_ARGON2I);
             $expires = new DateTime('now');
             $expires->modify('+30 minutes');
             $this->setTokenExpirationDateTime($expires);
+        } else {
+            $this->token = null;
         }
         return $this;
     }
@@ -144,8 +146,9 @@ class User implements UserInterface
     public function checkToken(string $tokenToCheck): bool
     {
         $isExpired = new DateTime('now') > $this->getTokenExpirationDateTime();
-        $invalidToken = empty($this->getToken()) || $tokenToCheck !== $this->getToken() || $isExpired;
-        if ($invalidToken) {
+        $validToken = password_verify($tokenToCheck, $this->getToken());
+        $invalid = empty($this->getToken()) || !$validToken || $isExpired;
+        if ($invalid) {
             if ($isExpired) {
                 $this->resetToken();
             }
@@ -155,11 +158,12 @@ class User implements UserInterface
         return true;
     }
 
-    public function generateToken(): self
+    public function generateToken(): string
     {
         $tokenGenerator = new UriSafeTokenGenerator();
-        $this->setToken($tokenGenerator->generateToken());
-        return $this;
+        $token = $tokenGenerator->generateToken();
+        $this->setToken($token);
+        return $token;
     }
 
     public function resetToken(): self

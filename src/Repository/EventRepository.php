@@ -21,7 +21,7 @@ class EventRepository extends AbstractRepository
     public function search($limit, $page)
     {
         $qb = $this->createQueryBuilder('e')
-            ->select('e')
+            ->orderBy('e.eventDate')
         ;
 
         return $this->paginate($qb, $limit, $page);
@@ -32,6 +32,7 @@ class EventRepository extends AbstractRepository
         $qb = $this->createQueryBuilder('e')
             ->where("e.eventTheme = :theme")
             ->setParameter("theme", $theme)
+            ->orderBy('e.eventDate')
         ;
 
         return $this->paginate($qb, $limit, $page);

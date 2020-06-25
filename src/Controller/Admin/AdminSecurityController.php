@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use App\Mailer\MailerService;
 use App\Repository\UserRepository;
 use JMS\Serializer\SerializerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -32,6 +33,7 @@ class AdminSecurityController extends AbstractController
      * @param ValidatorInterface $validator
      * @param SerializerInterface $serializer
      * @param TokenGeneratorInterface $tokenGenerator
+     * @param MailerService $mailerService
      * @return JsonResponse|Response
      */
     public function register(
@@ -40,7 +42,8 @@ class AdminSecurityController extends AbstractController
         EntityManagerInterface $manager,
         ValidatorInterface $validator,
         SerializerInterface $serializer,
-        TokenGeneratorInterface $tokenGenerator
+        TokenGeneratorInterface $tokenGenerator,
+        MailerService $mailerService
     )
     {
         $content = json_decode($request->getContent());
@@ -50,7 +53,7 @@ class AdminSecurityController extends AbstractController
 
             $password = substr($tokenGenerator->generateToken(), 0, 15);
 
-            $user->setPassword($passwordEncoder->encodePassword($user, $content->password));
+            $user->setPassword($passwordEncoder->encodePassword($user, $password));
             $user->setRoles(['ROLE_USER', 'ROLE_MANAGER']);
 
             $errors = $validator->validate($user);
@@ -62,9 +65,11 @@ class AdminSecurityController extends AbstractController
             $manager->persist($user);
             $manager->flush();
 
+            $mailerService->sendAccount($user, $password);
+
             $data = [
                 "code" => 201,
-                "message" => "User created with password $password"
+                "message" => "The user has been created"
             ];
 
             return new JsonResponse($data, 201);

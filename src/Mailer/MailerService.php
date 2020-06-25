@@ -70,6 +70,26 @@ class MailerService
     }
 
     /**
+     * @param User $user
+     * @param string $password
+     * @throws TransportExceptionInterface
+     */
+    public function sendAccount(User $user, string $password)
+    {
+        $message = (new TemplatedEmail())
+            ->from(self::NOREPLY)
+            ->to($user->getEmail())
+            ->subject('Création de votre compte Coeur de Bouviers')
+            ->htmlTemplate('emails/account-creation.html.twig')
+            ->context([
+                'user' => $user,
+                'password' => $password
+            ]);
+
+        $this->mailer->send($message);
+    }
+
+    /**
      * @return JsonResponse
      * @throws TransportExceptionInterface
      */

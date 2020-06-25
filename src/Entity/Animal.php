@@ -7,6 +7,7 @@ use JMS\Serializer\Annotation as JMS;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as AppAssert;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -84,10 +85,10 @@ class Animal
     private $weight;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      * 
-     * @Assert\GreaterThan(value=1, message="L'age de l'animal doit etre supérieure a {{ compared_value }} an")
-     * @Assert\LessThan(value=30, message="L'age de l'animal doit etre inférieure a {{ compared_value }} ans")
+     * @Assert\NotBlank()
+     * @AppAssert\Age()
      * 
      * @JMS\Groups({"animal", "category", "refuge"})
      */
@@ -134,6 +135,12 @@ class Animal
     private $description;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     * @JMS\Groups({"animal"})
+     */
+    private $isAdopted;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\AnimalCategory", inversedBy="animals")
      * @ORM\JoinColumn(nullable=false)
      * 
@@ -162,6 +169,7 @@ class Animal
      * })
      */
     private $pictureFiles;
+
 
     public function __construct()
     {
@@ -233,12 +241,12 @@ class Animal
         return $this;
     }
 
-    public function getAge(): ?int
+    public function getAge(): ?string
     {
         return $this->age;
     }
 
-    public function setAge(int $age): self
+    public function setAge(string $age): self
     {
         $this->age = $age;
 
@@ -277,6 +285,18 @@ class Animal
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getIsAdopted(): ?bool
+    {
+        return $this->isAdopted;
+    }
+
+    public function setIsAdopted(?bool $isAdopted): self
+    {
+        $this->isAdopted = $isAdopted;
 
         return $this;
     }

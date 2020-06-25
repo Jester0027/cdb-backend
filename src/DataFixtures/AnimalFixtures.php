@@ -65,11 +65,12 @@ class AnimalFixtures extends Fixture
         for ($i = 0; $i < 20; $i++) {
             $gender = rand(1, 2);
             $animal = new Animal;
+            $animalAgeTerm = ['m', 'y'];
             $animal->setName($faker->firstName($gender === 1 ? "male" : "female"))
                 ->setRace('default')
                 ->setHeight(rand(40, 60))
                 ->setWeight(rand(10, 50))
-                ->setAge(rand(1, 20))
+                ->setAge(rand(1, 20) . ' ' . $animalAgeTerm[rand(0, 1)])
                 ->setGender($gender === 1 ? true : false)
                 ->setAttitude($faker->realText())
                 ->setDescription($faker->realText())

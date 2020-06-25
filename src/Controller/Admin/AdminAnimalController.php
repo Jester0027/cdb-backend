@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Animal;
-use App\Repository\AnimalRepository;
 use App\Repository\RefugeRepository;
 use JMS\Serializer\SerializerInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +30,7 @@ class AdminAnimalController extends AbstractController
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $manager
      * @param ValidatorInterface $validator
-     * @return JsonResponse
+     * @return Response|JsonResponse
      */
     public function create(
         Request $request,
@@ -105,6 +104,7 @@ class AdminAnimalController extends AbstractController
             ->setGender($animal->getGender())
             ->setAttitude($animal->getAttitude())
             ->setDescription($animal->getDescription())
+            ->setIsAdopted($animal->getIsAdopted())
             ->setAnimalCategory($animal->getAnimalCategory())
             ->setRefuge($animal->getRefuge());
 

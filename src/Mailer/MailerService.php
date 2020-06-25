@@ -46,6 +46,24 @@ class MailerService
     }
 
     /**
+     * @return JsonResponse
+     * @throws TransportExceptionInterface
+     */
+    public function sendEventRegistration()
+    {
+        $data = $this->content;
+        $message = (new Email())
+            ->from($data->from)
+            ->to(self::CONTACT)
+            ->subject("[EVENT-REGISTER] $data->eventSlug")
+            ->text($data->content . "\n\ntel.: $data->userPhone\nlien: https://coeurdebouviers.be/evenements/$data->eventSlug")
+        ;
+        $this->mailer->send($message);
+
+        return new JsonResponse(["code" => "200", "message" => "mail sent successfully"], 200);
+    }
+
+    /**
      * @param User $user
      * @param string $token
      * @return JsonResponse

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Mailer\MailerService;
-use Symfony\Component\HttpFoundation\Request;
+use App\Services\ReCaptchaService;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * @Route("/contact")
@@ -22,31 +21,42 @@ class ContactController extends AbstractController
      * @Route("/send_contact", name="send_contact", methods={"POST"})
      *
      * @param MailerService $mailer
-     * @param Request $request
-     * @param HttpClientInterface $client
+     * @param ReCaptchaService $captchaService
      * @return JsonResponse
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    public function sendContact(MailerService $mailer, ReCaptchaService $captchaService): JsonResponse
+    {
+        $captchaRes = $captchaService->checkReCaptcha();
+
+        if ($captchaRes->success) {
+            return $mailer->sendContactDemand();
+        }
+        return new JsonResponse(['code' => 500, 'message' => 'INVALID_CAPTCHA'], 500);
+    }
+
+    /**
+     * @Route("/send_event_register", name="send_event_register", methods={"POST"})
+     *
+     * @param MailerService $mailerService
+     * @param ReCaptchaService $captchaService
+     * @return JsonResponse
      * @throws ClientExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
-    public function sendContact(MailerService $mailer, Request $request, HttpClientInterface $client): JsonResponse
+    public function sendEventRegistration(MailerService $mailerService, ReCaptchaService $captchaService)
     {
-        $data = json_decode($request->getContent());
-        $userKey = $data->userKey;
-        $sharedKey = $_ENV['G_SECRET'];
-        $url = "https://www.google.com/recaptcha/api/siteverify";
-        $res = $client->request('POST', $url, [
-            'body' => [
-                'secret' => $sharedKey,
-                'response' => $userKey
-            ]
-        ])->getContent();
-        $data = json_decode($res);
+        $captchaRes = $captchaService->checkReCaptcha();
 
-        if ($data->success) {
-            return $mailer->sendContactDemand();
+        if ($captchaRes->success) {
+            return $mailerService->sendEventRegistration();
         }
         return new JsonResponse(['code' => 500, 'message' => 'INVALID_CAPTCHA'], 500);
     }

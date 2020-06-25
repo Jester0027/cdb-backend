@@ -119,6 +119,15 @@ class Event
     private $coordinates;
 
     /**
+     * @ORM\Column(type="integer")
+     *
+     * @Assert\NotBlank(message="Renseignez le prix")
+     *
+     * @JMS\Groups({"event", "theme"})
+     */
+    private $price;
+
+    /**
      * @var File|null
      * @Vich\UploadableField(mapping="event_picture", fileNameProperty="imageUrl")
      * 
@@ -250,6 +259,18 @@ class Event
     public function setCoordinates(string $coordinates): self
     {
         $this->coordinates = $coordinates;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }

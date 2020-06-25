@@ -37,6 +37,7 @@ class EventFixtures extends Fixture
                 ->setZipCode($faker->postcode())
                 ->setCoordinates("$latitude,$longitude")
                 ->setImageUrl($faker->imageUrl())
+                ->setPrice(rand(10, 20))
                 ->setDescription($faker->realText())
                 ->setEventTheme($themes[rand(0, $numberOfThemes - 1)])
             ;

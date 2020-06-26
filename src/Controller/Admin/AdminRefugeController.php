@@ -20,7 +20,7 @@ class AdminRefugeController extends AbstractController
 {
     /**
      * @Route("/refuges", name="new_refuge", methods={"POST"})
-     * @IsGranted("ROLE_SUPERADMIN")
+     * @IsGranted("ROLE_MANAGER")
      *
      * @param Request $request
      * @param SerializerInterface $serializer

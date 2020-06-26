@@ -56,7 +56,7 @@ class MailerService
             ->from($data->from)
             ->to(self::CONTACT)
             ->subject("[EVENT-REGISTER] $data->eventSlug")
-            ->text($data->content . "\n\ntel.: $data->userPhone\nlien: https://coeurdebouviers.be/evenements/$data->eventSlug")
+            ->text($data->content . "\n\n------\n\n$data->name $data->surname\ntel.: $data->phone\nlien: https://coeurdebouviers.be/evenements/$data->eventSlug")
         ;
         $this->mailer->send($message);
 

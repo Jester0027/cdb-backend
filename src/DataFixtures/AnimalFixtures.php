@@ -55,9 +55,9 @@ class AnimalFixtures extends Fixture
         }
 
         $user = new User();
-        $user->setEmail('nonos007@hotmail.be')
+        $user->setEmail('test@test.com')
             ->setPassword($this->encoder->encodePassword($user, 'test'))
-            ->setRoles(['ROLE_SUPERADMIN', 'ROLE_MANAGER'])
+            ->setRoles(['ROLE_USER', 'ROLE_SUPERADMIN', 'ROLE_MANAGER'])
             ->addRefuge($refuges[0]);
 
         $manager->persist($user);
